@@ -142,9 +142,9 @@ def get_adjacency_matrix(distance_df_filename, num_of_vertices):
 
     return A
 
-
+'''
 def scaled_Laplacian(W):
-    '''
+    """
     compute \tilde{L}
 
     Parameters
@@ -155,7 +155,7 @@ def scaled_Laplacian(W):
     ----------
     scaled_Laplacian: np.ndarray, shape (N, N)
 
-    '''
+    """
 
     assert W.shape[0] == W.shape[1]
 
@@ -166,6 +166,34 @@ def scaled_Laplacian(W):
     lambda_max = eigs(L, k=1, which='LR')[0].real
 
     return (2 * L) / lambda_max - np.identity(W.shape[0])
+'''
+"""
+def normalize_adjAA(adj):
+    adj = sp.coo_matrix(adj)
+    rowsum = np.array(adj.sum(1))
+    d_inv_sqrt = np.power(np.log(rowsum), -1).flatten()
+    d_inv_sqrt[np.isinf(d_inv_sqrt)] = 0.
+    d_mat_inv_sqrt = sp.diags(d_inv_sqrt)
+    DA = d_mat_inv_sqrt.dot(adj);
+    return adj.dot(DA).tocoo()
+"""
+def normalize_adjAA(W):
+    # Calculate row sums
+    rowsum = np.array(W.sum(1))
+    # Check for zero values in rowsum
+    zero_indices = np.where(rowsum == 0)
+    # Handle zero values by setting them to a small positive number (e.g., 1e-6)
+    rowsum[zero_indices] = 1e-6
+    # Calculate the inverse root of rowsum
+    d_inv_sqrt = np.power(np.log(rowsum), -1).flatten()
+    # Handle infinity values by setting them to 0
+    d_inv_sqrt[np.isinf(d_inv_sqrt)] = 0.0
+    # Create a diagonal matrix from d_inv_sqrt
+    d_mat_inv_sqrt = np.diag(d_inv_sqrt)
+    # Calculate the normalized adjacency matrix
+    DA = d_mat_inv_sqrt.dot(W)
+    
+    return W.dot(DA)
 
 
 def cheb_polynomial(L_tilde, K):
