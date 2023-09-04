@@ -4,7 +4,7 @@ import configparser
 
 from mxnet import nd
 
-from lib.utils import normalize_adjAA, cheb_polynomial, get_adjacency_matrix
+from lib.utils import normalize_adjHPI, cheb_polynomial, get_adjacency_matrix
 
 
 def get_backbones(config_filename, adj_filename, ctx):
@@ -18,7 +18,7 @@ def get_backbones(config_filename, adj_filename, ctx):
     num_of_vertices = int(config['Data']['num_of_vertices'])
 
     adj_mx = get_adjacency_matrix(adj_filename, num_of_vertices)
-    L_tilde = normalize_adjAA(adj_mx)
+    L_tilde = normalize_adjHPI(adj_mx)
     cheb_polynomials = [nd.array(i, ctx=ctx)
                         for i in cheb_polynomial(L_tilde, K)]
 
