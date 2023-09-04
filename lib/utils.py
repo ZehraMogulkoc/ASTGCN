@@ -176,7 +176,7 @@ def normalize_adjAA(adj):
     d_mat_inv_sqrt = sp.diags(d_inv_sqrt)
     DA = d_mat_inv_sqrt.dot(adj);
     return adj.dot(DA).tocoo()
-"""
+
 def normalize_adjAA(W):
     # Calculate row sums
     rowsum = np.array(W.sum(1))
@@ -194,6 +194,44 @@ def normalize_adjAA(W):
     DA = d_mat_inv_sqrt.dot(W)
     
     return W.dot(DA)
+"""
+def myminimum(A,B):
+    BisBigger = A-B
+    BisBigger.data = np.where(BisBigger.data >= 0, 1, 0)
+    return A - A.multiply(BisBigger) + B.multiply(BisBigger)
+
+import scipy.sparse as sp
+
+def normalize_adjHPI(adj):
+    adj = sp.coo_matrix(adj)
+
+    rowsum = np.array(adj.sum(1))
+    
+    deg_row = np.tile(rowsum, (1,adj.shape[0]))
+    
+    #deg_row = deg_row.T
+    deg_row = sp.coo_matrix(deg_row)
+    
+    sim = adj.dot(adj)
+    
+    #y = sim.copy().tocsr()
+    #y.data.fill(1)
+    X = sim.astype(bool).astype(int)
+    deg_row = deg_row.multiply(X)
+    
+    deg_row = myminimum(deg_row, deg_row.T)
+    
+    sim = sim/deg_row
+    #sim = sp.coo_matrix(sim)
+    whereAreNan = np.isnan(sim)
+    whereAreInf = np.isinf(sim)
+    sim[whereAreNan] = 0
+    sim[whereAreInf] = 0
+    
+    sim = sp.coo_matrix(sim)
+    #print(sim[0])
+    return sim.toarray()
+
 
 
 def cheb_polynomial(L_tilde, K):
