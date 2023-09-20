@@ -1,0 +1,27 @@
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+   <vType id="veh1" laneChangeModel="LC2013" lcCooperative="5.0" lcKeepRight="3.0" lcSpeedGain="5.0" lcStrategic="10.0" length="4.00" maxSpeed="55.00" minGap="1.50" vClass="passenger" />
+   <vehicle arrivalPos="30" depart="0.00" id="12071" type="veh1">
+      <route edges="KC_A1 KC_A2 YB_E1" />
+   </vehicle>
+   <vehicle arrivalPos="30" depart="0.00" id="12072" type="veh1">
+      <route edges="KC_A1 KC_A2 YB_E1" />
+   </vehicle>
+   <vehicle arrivalPos="30" depart="2.00" id="44" type="veh1">
+      <route edges="GH_A1 GH_A2 GH_C2 GH_F" />
+   </vehicle>
+   <vehicle arrivalPos="30" depart="2.00" id="4446" type="veh1">
+      <route edges="KL_E1 KL_E2 GH_C" />
+   </vehicle>
+<vehicle arrivalPos="30" depart="0.00" id="12073" type="veh1">
+      <route edges="KC_A1 KC_A2 YB_E1" />
+   </vehicle>
+   <vehicle arrivalPos="30" depart="0.00" id="12074" type="veh1">
+      <route edges="KC_A1 KC_A2 YB_E1" />
+   </vehicle>
+   <vehicle arrivalPos="30" depart="2.00" id="12075" type="veh1">
+      <route edges="GH_A1 GH_A2 GH_C2 GH_F" />
+   </vehicle>
+   <vehicle arrivalPos="30" depart="2.00" id="12076" type="veh1">
+      <route edges="KL_E1 KL_E2 GH_C" />
+   </vehicle>
+</routes>

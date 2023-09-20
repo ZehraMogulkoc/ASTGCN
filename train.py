@@ -10,9 +10,12 @@ import argparse
 import numpy as np
 
 import mxnet as mx
-from mxnet import nd
+#from mxnet import nd
+from mxnet import ndarray as nd
+
 from mxnet import gluon
 from mxnet import autograd
+
 from mxboard import SummaryWriter
 
 from lib.utils import compute_val_loss, evaluate, predict
