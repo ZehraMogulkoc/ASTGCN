@@ -177,24 +177,7 @@ def normalize_adjAA(adj):
     DA = d_mat_inv_sqrt.dot(adj);
     return adj.dot(DA).tocoo()
 
-def normalize_adjAA(W):
-    # Calculate row sums
-    rowsum = np.array(W.sum(1))
-    # Check for zero values in rowsum
-    zero_indices = np.where(rowsum == 0)
-    # Handle zero values by setting them to a small positive number (e.g., 1e-6)
-    rowsum[zero_indices] = 1e-6
-    # Calculate the inverse root of rowsum
-    d_inv_sqrt = np.power(np.log(rowsum), -1).flatten()
-    # Handle infinity values by setting them to 0
-    d_inv_sqrt[np.isinf(d_inv_sqrt)] = 0.0
-    # Create a diagonal matrix from d_inv_sqrt
-    d_mat_inv_sqrt = np.diag(d_inv_sqrt)
-    # Calculate the normalized adjacency matrix
-    DA = d_mat_inv_sqrt.dot(W)
-    
-    return W.dot(DA)
-"""
+
 def myminimum(A,B):
     BisBigger = A-B
     BisBigger.data = np.where(BisBigger.data >= 0, 1, 0)
@@ -232,7 +215,24 @@ def normalize_adjHPI(adj):
     #print(sim[0])
     return sim.toarray()
 
-
+"""
+def normalize_adjAA(W):
+    # Calculate row sums
+    rowsum = np.array(W.sum(1))
+    # Check for zero values in rowsum
+    zero_indices = np.where(rowsum == 0)
+    # Handle zero values by setting them to a small positive number (e.g., 1e-6)
+    rowsum[zero_indices] = 1e-6
+    # Calculate the inverse root of rowsum
+    d_inv_sqrt = np.power(np.log(rowsum), -1).flatten()
+    # Handle infinity values by setting them to 0
+    d_inv_sqrt[np.isinf(d_inv_sqrt)] = 0.0
+    # Create a diagonal matrix from d_inv_sqrt
+    d_mat_inv_sqrt = np.diag(d_inv_sqrt)
+    # Calculate the normalized adjacency matrix
+    DA = d_mat_inv_sqrt.dot(W)
+    
+    return W.dot(DA)
 
 def cheb_polynomial(L_tilde, K):
     '''

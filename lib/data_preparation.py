@@ -101,7 +101,7 @@ def read_and_generate_dataset(graph_signal_matrix_filename,
     train_week, train_day, train_hour, train_target = training_set
     val_week, val_day, val_hour, val_target = validation_set
     test_week, test_day, test_hour, test_target = testing_set
-
+    print(train_target)
     print('training data: week: {}, day: {}, recent: {}, target: {}'.format(
         train_week.shape, train_day.shape,
         train_hour.shape, train_target.shape))

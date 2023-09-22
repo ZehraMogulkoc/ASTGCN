@@ -39,36 +39,36 @@ def test_search_data5():
 
 def test_get_sample_indices1():
     from lib.utils import get_sample_indices
-    data = np.random.uniform(size=(2016 + 12, 307, 3))
+    data = np.random.uniform(size=(2016 + 12, 19, 3))
     week, day, hour, target = get_sample_indices(data, 1, 1, 3, 2016, 12, 12)
-    assert week.shape == (12, 307, 3)
-    assert day.shape == (12, 307, 3)
-    assert hour.shape == (12 * 3, 307, 3)
-    assert target.shape == (12, 307, 3)
+    assert week.shape == (12, 19, 3)
+    assert day.shape == (12, 19, 3)
+    assert hour.shape == (12 * 3, 19, 3)
+    assert target.shape == (12, 19, 3)
 
 
 def test_get_sample_indices2():
     from lib.utils import get_sample_indices
-    data = np.random.uniform(size=(2016 + 12, 307, 3))
+    data = np.random.uniform(size=(2016 + 12, 19, 3))
     sample = get_sample_indices(data, 2, 3, 3, 2016, 12, 12)
     assert sample is None
 
 
 def test_get_sample_indices3():
     from lib.utils import get_sample_indices
-    data = np.random.uniform(size=(7 * 24 * 12 * 2 + 12, 307, 3))
+    data = np.random.uniform(size=(7 * 24 * 12 * 2 + 12, 19, 3))
     week, day, hour, target = get_sample_indices(data, 2, 4, 3,
                                                  7 * 24 * 12 * 2, 12, 12)
-    assert week.shape == (12 * 2, 307, 3)
-    assert day.shape == (12 * 4, 307, 3)
-    assert hour.shape == (12 * 3, 307, 3)
-    assert target.shape == (12, 307, 3)
+    assert week.shape == (12 * 2, 19, 3)
+    assert day.shape == (12 * 4, 19, 3)
+    assert hour.shape == (12 * 3, 19, 3)
+    assert target.shape == (12, 19, 3)
 
 
 def test_get_adjacency_matrix1():
     from lib.utils import get_adjacency_matrix
-    filename = 'data/PEMS04/distance.csv'
-    num_of_vertices = 307
+    filename = 'data/PEMS04/conn_graph.csv'
+    num_of_vertices = 19
     A = get_adjacency_matrix(filename, num_of_vertices)
     assert A.shape == (num_of_vertices, num_of_vertices)
 
@@ -83,14 +83,14 @@ def test_get_adjacency_matrix2():
 
 def test_scaled_Laplacian():
     from lib.utils import get_adjacency_matrix, normalize_adjHPI
-    adj = get_adjacency_matrix('data/PEMS04/distance.csv', 307)
+    adj = get_adjacency_matrix('data/PEMS04/conn_graph.csv', 19)
     assert normalize_adjHPI(adj).shape == adj.shape
 
 
 def test_cheb_polynomial1():
     from lib.utils import (get_adjacency_matrix,
                            normalize_adjHPI, cheb_polynomial)
-    adj = get_adjacency_matrix('data/PEMS04/distance.csv', 307)
+    adj = get_adjacency_matrix('data/PEMS04/conn_graph.csv', 19)
     L = normalize_adjHPI(adj)
     cheb_polys = cheb_polynomial(L, 3)
     assert len(cheb_polys) == 3

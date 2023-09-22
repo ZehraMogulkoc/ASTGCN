@@ -1,7 +1,7 @@
 import numpy as np
 
 # Load the NPZ file
-data = np.load('D:\\ASTGCN-master\\data\\PEMS04\\gunes_kcetas_c.npz')
+data = np.load('D:\\ASTGCN-master\\data\\PEMS04\\gunes_kcetas_c2.npz')
 
 # Get the list of keys (file names)
 lst = data.files

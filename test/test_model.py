@@ -10,9 +10,9 @@ sys.path.append('.')
 
 def test_ASTGCN_submodule():
     from model.astgcn import ASTGCN_submodule
-    x = nd.random_uniform(shape=(32, 307, 3, 24))
+    x = nd.random_uniform(shape=(32, 19, 3, 24))
     K = 3
-    cheb_polynomials = [nd.random_uniform(shape=(307, 307)) for i in range(K)]
+    cheb_polynomials = [nd.random_uniform(shape=(19, 19)) for i in range(K)]
     backbone = [
         {
             "K": K,
@@ -32,7 +32,7 @@ def test_ASTGCN_submodule():
     net = ASTGCN_submodule(12, backbone)
     net.initialize()
     output = net(x)
-    assert output.shape == (32, 307, 12)
+    assert output.shape == (32, 19, 12)
     assert type(output.mean().asscalar()) == np.float32
 
 
@@ -42,15 +42,15 @@ def test_predict1():
     import mxnet as mx
     ctx = mx.cpu()
     all_backbones = get_backbones('configurations/PEMS04.conf',
-                                  'data/PEMS04/distance.csv', ctx)
+                                  'data/PEMS04/conn_graph.csv', ctx)
 
     net = ASTGCN(12, all_backbones)
     net.initialize(ctx=ctx)
-    test_w = nd.random_uniform(shape=(16, 307, 3, 12), ctx=ctx)
-    test_d = nd.random_uniform(shape=(16, 307, 3, 12), ctx=ctx)
-    test_r = nd.random_uniform(shape=(16, 307, 3, 36), ctx=ctx)
+    test_w = nd.random_uniform(shape=(16, 19, 3, 12), ctx=ctx)
+    test_d = nd.random_uniform(shape=(16, 19, 3, 12), ctx=ctx)
+    test_r = nd.random_uniform(shape=(16, 19, 3, 36), ctx=ctx)
     output = net([test_w, test_d, test_r])
-    assert output.shape == (16, 307, 12)
+    assert output.shape == (16, 19, 12)
     assert type(output.mean().asscalar()) == np.float32
 
 
