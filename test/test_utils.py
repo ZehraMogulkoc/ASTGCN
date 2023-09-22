@@ -82,16 +82,16 @@ def test_get_adjacency_matrix2():
 
 
 def test_scaled_Laplacian():
-    from lib.utils import get_adjacency_matrix, normalize_adjHPI
+    from lib.utils import get_adjacency_matrix, scaled_Laplacian
     adj = get_adjacency_matrix('data/PEMS04/conn_graph.csv', 19)
-    assert normalize_adjHPI(adj).shape == adj.shape
+    assert scaled_Laplacian(adj).shape == adj.shape
 
 
 def test_cheb_polynomial1():
     from lib.utils import (get_adjacency_matrix,
-                           normalize_adjHPI, cheb_polynomial)
+                           scaled_Laplacian, cheb_polynomial)
     adj = get_adjacency_matrix('data/PEMS04/conn_graph.csv', 19)
-    L = normalize_adjHPI(adj)
+    L = scaled_Laplacian(adj)
     cheb_polys = cheb_polynomial(L, 3)
     assert len(cheb_polys) == 3
     for i in cheb_polys:
@@ -100,9 +100,9 @@ def test_cheb_polynomial1():
 
 def test_cheb_polynomial2():
     from lib.utils import (get_adjacency_matrix,
-                           normalize_adjHPI, cheb_polynomial)
+                           scaled_Laplacian, cheb_polynomial)
     adj = get_adjacency_matrix('data/PEMS08/distance.csv', 170)
-    L = normalize_adjHPI(adj)
+    L = scaled_Laplacian(adj)
     cheb_polys = cheb_polynomial(L, 4)
     assert len(cheb_polys) == 4
     for i in cheb_polys:

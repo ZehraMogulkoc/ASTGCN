@@ -143,6 +143,19 @@ def get_adjacency_matrix(distance_df_filename, num_of_vertices):
     return A
 
 '''
+
+'''
+"""
+def normalize_adjAA(adj):
+    adj = sp.coo_matrix(adj)
+    rowsum = np.array(adj.sum(1))
+    d_inv_sqrt = np.power(np.log(rowsum), -1).flatten()
+    d_inv_sqrt[np.isinf(d_inv_sqrt)] = 0.
+    d_mat_inv_sqrt = sp.diags(d_inv_sqrt)
+    DA = d_mat_inv_sqrt.dot(adj);
+    return adj.dot(DA).tocoo()
+
+"""
 def scaled_Laplacian(W):
     """
     compute \tilde{L}
@@ -166,18 +179,6 @@ def scaled_Laplacian(W):
     lambda_max = eigs(L, k=1, which='LR')[0].real
 
     return (2 * L) / lambda_max - np.identity(W.shape[0])
-'''
-"""
-def normalize_adjAA(adj):
-    adj = sp.coo_matrix(adj)
-    rowsum = np.array(adj.sum(1))
-    d_inv_sqrt = np.power(np.log(rowsum), -1).flatten()
-    d_inv_sqrt[np.isinf(d_inv_sqrt)] = 0.
-    d_mat_inv_sqrt = sp.diags(d_inv_sqrt)
-    DA = d_mat_inv_sqrt.dot(adj);
-    return adj.dot(DA).tocoo()
-
-
 def myminimum(A,B):
     BisBigger = A-B
     BisBigger.data = np.where(BisBigger.data >= 0, 1, 0)
@@ -215,7 +216,7 @@ def normalize_adjHPI(adj):
     #print(sim[0])
     return sim.toarray()
 
-"""
+
 def normalize_adjAA(W):
     # Calculate row sums
     rowsum = np.array(W.sum(1))
