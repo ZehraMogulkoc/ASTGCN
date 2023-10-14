@@ -4,7 +4,7 @@ import configparser
 
 from mxnet import nd
 
-from lib.utils import normalize_adjHPI, cheb_polynomial, get_adjacency_matrix
+from lib.utils import scaled_Laplacian, cheb_polynomial, get_adjacency_matrix
 
 
 def get_backbones(config_filename, adj_filename, ctx):
@@ -12,17 +12,17 @@ def get_backbones(config_filename, adj_filename, ctx):
     config.read(config_filename)
 
     K = int(config['Training']['K'])
-    num_of_weeks = int(config['Training']['num_of_weeks'])
-    num_of_days = int(config['Training']['num_of_days'])
+    #num_of_weeks = int(config['Training']['num_of_weeks'])
+    #num_of_days = int(config['Training']['num_of_days'])
     num_of_hours = int(config['Training']['num_of_hours'])
     num_of_vertices = int(config['Data']['num_of_vertices'])
 
     adj_mx = get_adjacency_matrix(adj_filename, num_of_vertices)
-    L_tilde = normalize_adjHPI(adj_mx)
+    L_tilde = scaled_Laplacian(adj_mx)
     cheb_polynomials = [nd.array(i, ctx=ctx)
                         for i in cheb_polynomial(L_tilde, K)]
 
-    backbones1 = [
+    """ backbones1 = [
         {
             "K": K,
             "num_of_chev_filters": 64,
@@ -37,9 +37,9 @@ def get_backbones(config_filename, adj_filename, ctx):
             "time_conv_strides": 1,
             "cheb_polynomials": cheb_polynomials
         }
-    ]
+    ] """
 
-    backbones2 = [
+    """ backbones2 = [
         {
             "K": K,
             "num_of_chev_filters": 64,
@@ -54,7 +54,7 @@ def get_backbones(config_filename, adj_filename, ctx):
             "time_conv_strides": 1,
             "cheb_polynomials": cheb_polynomials
         }
-    ]
+    ] """
 
     backbones3 = [
         {
@@ -74,8 +74,6 @@ def get_backbones(config_filename, adj_filename, ctx):
     ]
 
     all_backbones = [
-        backbones1,
-        backbones2,
         backbones3
     ]
 

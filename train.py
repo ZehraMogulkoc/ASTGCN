@@ -53,8 +53,8 @@ optimizer = training_config['optimizer']
 learning_rate = float(training_config['learning_rate'])
 epochs = int(training_config['epochs'])
 batch_size = int(training_config['batch_size'])
-num_of_weeks = int(training_config['num_of_weeks'])
-num_of_days = int(training_config['num_of_days'])
+#num_of_weeks = int(training_config['num_of_weeks'])
+#num_of_days = int(training_config['num_of_days'])
 num_of_hours = int(training_config['num_of_hours'])
 merge = bool(int(training_config['merge']))
 
@@ -106,9 +106,9 @@ if __name__ == "__main__":
     # read all data from graph signal matrix file
     print("Reading data...")
     all_data = read_and_generate_dataset(graph_signal_matrix_filename,
-                                         num_of_weeks,
-                                         num_of_days,
-                                         num_of_hours,
+                                       #  num_of_weeks,
+                                        # num_of_days,
+                                          num_of_hours,
                                          num_for_predict,
                                          points_per_hour,
                                          merge)
@@ -120,8 +120,8 @@ if __name__ == "__main__":
     # training set data loader
     train_loader = gluon.data.DataLoader(
                         gluon.data.ArrayDataset(
-                            nd.array(all_data['train']['week'], ctx=ctx),
-                            nd.array(all_data['train']['day'], ctx=ctx),
+                           # nd.array(all_data['train']['week'], ctx=ctx),
+                           # nd.array(all_data['train']['day'], ctx=ctx),
                             nd.array(all_data['train']['recent'], ctx=ctx),
                             nd.array(all_data['train']['target'], ctx=ctx)
                         ),
@@ -132,8 +132,8 @@ if __name__ == "__main__":
     # validation set data loader
     val_loader = gluon.data.DataLoader(
                     gluon.data.ArrayDataset(
-                        nd.array(all_data['val']['week'], ctx=ctx),
-                        nd.array(all_data['val']['day'], ctx=ctx),
+                        #nd.array(all_data['val']['week'], ctx=ctx),
+                        #nd.array(all_data['val']['day'], ctx=ctx),
                         nd.array(all_data['val']['recent'], ctx=ctx),
                         nd.array(all_data['val']['target'], ctx=ctx)
                     ),
@@ -144,8 +144,8 @@ if __name__ == "__main__":
     # testing set data loader
     test_loader = gluon.data.DataLoader(
                     gluon.data.ArrayDataset(
-                        nd.array(all_data['test']['week'], ctx=ctx),
-                        nd.array(all_data['test']['day'], ctx=ctx),
+                       # nd.array(all_data['test']['week'], ctx=ctx),
+                       # nd.array(all_data['test']['day'], ctx=ctx),
                         nd.array(all_data['test']['recent'], ctx=ctx),
                         nd.array(all_data['test']['target'], ctx=ctx)
                     ),
@@ -155,7 +155,7 @@ if __name__ == "__main__":
 
     # save Z-score mean and std
     stats_data = {}
-    for type_ in ['week', 'day', 'recent']:
+    for type_ in [ 'recent']:
         stats = all_data['stats'][type_]
         stats_data[type_ + '_mean'] = stats['mean']
         stats_data[type_ + '_std'] = stats['std']
@@ -172,8 +172,8 @@ if __name__ == "__main__":
 
     net = model(num_for_predict, all_backbones)
     net.initialize(ctx=ctx)
-    for val_w, val_d, val_r, val_t in val_loader:
-        net([val_w, val_d, val_r])
+    for val_r, val_t in val_loader:
+        net([ val_r])
         break
     net.initialize(ctx=ctx, init=MyInit(), force_reinit=True)
 
@@ -194,12 +194,12 @@ if __name__ == "__main__":
     global_step = 1
     for epoch in range(1, epochs + 1):
 
-        for train_w, train_d, train_r, train_t in train_loader:
+        for train_r, train_t in train_loader:
 
             start_time = time()
 
             with autograd.record():
-                output = net([train_w, train_d, train_r])
+                output = net([train_r])
                 l = loss_function(output, train_t)
             l.backward()
             trainer.step(train_t.shape[0])

@@ -52,7 +52,9 @@ def search_data(sequence_length, num_of_batches, label_start_idx,
     return x_idx[::-1]
 
 
-def get_sample_indices(data_sequence, num_of_weeks, num_of_days, num_of_hours,
+def get_sample_indices(data_sequence, 
+                      # num_of_weeks, num_of_days,
+                         num_of_hours,
                        label_start_idx, num_for_predict, points_per_hour=12):
     '''
     Parameters
@@ -86,6 +88,7 @@ def get_sample_indices(data_sequence, num_of_weeks, num_of_days, num_of_hours,
     target: np.ndarray
             shape is (num_for_predict, num_of_vertices, num_of_features)
     '''
+    '''
     week_indices = search_data(data_sequence.shape[0], num_of_weeks,
                                label_start_idx, num_for_predict,
                                7 * 24, points_per_hour)
@@ -97,22 +100,23 @@ def get_sample_indices(data_sequence, num_of_weeks, num_of_days, num_of_hours,
                               24, points_per_hour)
     if not day_indices:
         return None
-
+'''
     hour_indices = search_data(data_sequence.shape[0], num_of_hours,
                                label_start_idx, num_for_predict,
                                1, points_per_hour)
     if not hour_indices:
         return None
-
+    '''
     week_sample = np.concatenate([data_sequence[i: j]
                                   for i, j in week_indices], axis=0)
     day_sample = np.concatenate([data_sequence[i: j]
                                  for i, j in day_indices], axis=0)
+    '''                           
     hour_sample = np.concatenate([data_sequence[i: j]
                                   for i, j in hour_indices], axis=0)
     target = data_sequence[label_start_idx: label_start_idx + num_for_predict]
-
-    return week_sample, day_sample, hour_sample, target
+    #week_sample, day_sample, 
+    return hour_sample, target
 
 
 def get_adjacency_matrix(distance_df_filename, num_of_vertices):
@@ -142,20 +146,7 @@ def get_adjacency_matrix(distance_df_filename, num_of_vertices):
 
     return A
 
-'''
 
-'''
-"""
-def normalize_adjAA(adj):
-    adj = sp.coo_matrix(adj)
-    rowsum = np.array(adj.sum(1))
-    d_inv_sqrt = np.power(np.log(rowsum), -1).flatten()
-    d_inv_sqrt[np.isinf(d_inv_sqrt)] = 0.
-    d_mat_inv_sqrt = sp.diags(d_inv_sqrt)
-    DA = d_mat_inv_sqrt.dot(adj);
-    return adj.dot(DA).tocoo()
-
-"""
 def scaled_Laplacian(W):
     """
     compute \tilde{L}
@@ -179,6 +170,18 @@ def scaled_Laplacian(W):
     lambda_max = eigs(L, k=1, which='LR')[0].real
 
     return (2 * L) / lambda_max - np.identity(W.shape[0])
+
+"""
+def normalize_adjAA(adj):
+    adj = sp.coo_matrix(adj)
+    rowsum = np.array(adj.sum(1))
+    d_inv_sqrt = np.power(np.log(rowsum), -1).flatten()
+    d_inv_sqrt[np.isinf(d_inv_sqrt)] = 0.
+    d_mat_inv_sqrt = sp.diags(d_inv_sqrt)
+    DA = d_mat_inv_sqrt.dot(adj);
+    return adj.dot(DA).tocoo()
+
+
 def myminimum(A,B):
     BisBigger = A-B
     BisBigger.data = np.where(BisBigger.data >= 0, 1, 0)
@@ -216,7 +219,7 @@ def normalize_adjHPI(adj):
     #print(sim[0])
     return sim.toarray()
 
-
+"""
 def normalize_adjAA(W):
     # Calculate row sums
     rowsum = np.array(W.sum(1))
@@ -281,8 +284,8 @@ def compute_val_loss(net, val_loader, loss_function, sw, epoch):
     '''
     val_loader_length = len(val_loader)
     tmp = []
-    for index, (val_w, val_d, val_r, val_t) in enumerate(val_loader):
-        output = net([val_w, val_d, val_r])
+    for index, (val_r, val_t) in enumerate(val_loader):
+        output = net([val_r])
         l = loss_function(output, val_t)
         tmp.extend(l.asnumpy().tolist())
         print('validation batch %s / %s, loss: %.2f' % (
@@ -314,8 +317,8 @@ def predict(net, test_loader):
 
     test_loader_length = len(test_loader)
     prediction = []
-    for index, (test_w, test_d, test_r, _) in enumerate(test_loader):
-        prediction.append(net([test_w, test_d, test_r]).asnumpy())
+    for index, (test_r, _) in enumerate(test_loader):
+        prediction.append(net([test_r]).asnumpy())
         print('predicting testing set batch %s / %s' % (index + 1,
                                                         test_loader_length))
     prediction = np.concatenate(prediction, 0)

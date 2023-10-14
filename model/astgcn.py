@@ -224,13 +224,14 @@ class ASTGCN_block(nn.Block):
             self.TAt = Temporal_Attention_layer()
             self.time_conv = nn.Conv2D(
                 channels=num_of_time_filters,
-                kernel_size=(1, 3),
+                kernel_size=(1, 1),
                 padding=(0, 1),
-                strides=(1, time_conv_strides))
+                strides=(1, 3))
             self.residual_conv = nn.Conv2D(
                 channels=num_of_time_filters,
                 kernel_size=(1, 1),
-                strides=(1, time_conv_strides))
+                padding=(0, 1),
+                strides=(1, 3))
             self.ln = nn.LayerNorm(axis=2)
 
     def forward(self, x):
